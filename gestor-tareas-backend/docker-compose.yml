@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_local
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: .
+    container_name: gestor_tareas_backend
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - MONGO_URI=mongodb://root:1234@mongo:27017/gestor_tareas?authSource=admin
+      - JWT_SECRET=Ximena25092004
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
